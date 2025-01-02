@@ -1,0 +1,87 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Django-specific
+*.log
+*.pot
+*.pyc
+*.pyo
+*.sqlite3
+*.db
+
+# Local development settings
+settings_local.py
+.env
+
+# Static files
+/static/
+!/static/.gitkeep
+
+# Media files
+/media/
+!/media/.gitkeep
+
+# Compiled files
+*.so
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# JetBrains IDEs
+.idea/
+*.iml
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Node.js dependencies (if applicable)
+node_modules/
+
+# Coverage reports
+htmlcov/
+*.cover
+.coverage
+*.coverage.*
+
+# Testing artifacts
+.tox/
+.nox/
+.pytest_cache/
+coverage.xml
+*.egg-info/
+.eggs/
+
+# Migrations (optional, keep if you want to track migrations)
+# Uncomment the next line if you want to ignore migrations
+# */migrations/
+
+# Build artifacts
+build/
+dist/
+*.egg
+*.manifest
+*.spec
+
+# Docker
+*.log
+*.pid
+*.swp
+docker-compose.override.yml
