@@ -78,13 +78,16 @@ class RotateImageAPIView(CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
-        serializer = RotateImageSerializer(data=data)
+
+        serializer = RotateImageSerializer(data=data, context={"user":request.user})
         serializer.is_valid(raise_exception=True)
-        _id = serializer.validated_data.get("image")
-        image = ImageFile.objects.get(id=_id)
+
+        image = serializer.validated_data.get("image")
+        angle = serializer.validated_data.get("angle")
+
         image_service = ImageService(image)
-        angel = float(serializer.validated_data.get("angle"))
-        path = image_service.rotate(angle=angel)
+        path = image_service.rotate(angle=angle)
+    
         return Response({"rotated_image_path": path}, status=status.HTTP_201_CREATED)
 
 
@@ -117,9 +120,12 @@ class ConvertPDFAPIView(CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         data = request.data
+
         serializer = CovertPDFSerializer(data=data,context={"user":request.user})
         serializer.is_valid(raise_exception=True)
+
         pdf = serializer.validated_data.get("pdf")
         pdf_service = PDFService(pdf)
         path = pdf_service.convert()
+
         return Response({"converted_pdf_path": path}, status=status.HTTP_201_CREATED)

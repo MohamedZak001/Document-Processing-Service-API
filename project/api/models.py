@@ -21,12 +21,12 @@ class ImageFile(models.Model):
 
     @property
     def location(self):
-        return self.pdf.path
+        return self.image.path
 
     @property
     def width(self):
         if not hasattr(self,"_width"):
-            self.read_pdf_meta_data()
+            self.read_image_meta_data()
         return self._width
 
     @property
@@ -41,7 +41,7 @@ class ImageFile(models.Model):
             self.read_image_meta_data()
         return self._number_of_channels
         
-    def read_pdf_meta_data(self):
+    def read_image_meta_data(self):
         with Image.open(self.image) as img:
             self._width = img.width
             self._height = img.height
