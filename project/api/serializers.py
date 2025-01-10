@@ -1,8 +1,6 @@
 from rest_framework import serializers
 from rest_framework.validators import ValidationError
-from .models import ImageFile
-
-
+from .models import ImageFile, PdfFile
 
 
 
@@ -16,7 +14,6 @@ class FileUploadSerializer(serializers.Serializer):
         attrs = super().validate(attrs)
         if not attrs.get('pdf') and not attrs.get('image'):
             raise ValidationError("Either 'pdf' or 'image' must be provided.")
-        print(attrs)
         return attrs
     
 
@@ -61,3 +58,48 @@ class RotateImageSerializer(serializers.Serializer):
 
 
 
+
+# pdf serializers
+
+class ListPDFSerializer(serializers.ModelSerializer):
+
+
+    class Meta:
+        model = PdfFile
+        fields = [
+            "title", "pdf","uploaded_at"
+        ]
+
+
+
+class RetrievePDFSerializer(serializers.Serializer):
+
+    location = serializers.CharField()
+    number_of_pages = serializers.IntegerField()
+    page_width = serializers.DecimalField(max_digits=6,decimal_places=2)
+    page_height = serializers.DecimalField(max_digits=6,decimal_places=2)
+
+
+    def get_location(self, instance: PdfFile):
+        return instance.location
+
+    def get_number_of_pages(self, instance: PdfFile):
+        return instance.number_of_pages
+
+    def get_page_width(self, instance: PdfFile):
+        return instance.page_width
+
+    def get_page_height(self, instance: PdfFile):
+        return instance.page_height
+
+
+class CovertPDFSerializer(serializers.Serializer):
+    pdf = serializers.PrimaryKeyRelatedField(
+        queryset=PdfFile.objects.none(),
+        write_only=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        user = self.context.get("user")
+        if user:
+            self.fields["pdf"].queryset = PdfFile.objects.filter(user=user)
