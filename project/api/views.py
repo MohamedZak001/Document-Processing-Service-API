@@ -9,6 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import ListAPIView, RetrieveDestroyAPIView, CreateAPIView
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 
 
@@ -93,6 +94,7 @@ class RotateImageAPIView(CreateAPIView):
 class ListPDFAPIView(ListAPIView):
     queryset = PdfFile.objects.all()
     serializer_class = ListPDFSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -107,6 +109,7 @@ class RetrieveDestroyPDFAPIView(RetrieveDestroyAPIView):
     queryset = PdfFile.objects.all()
     serializer_class = RetrievePDFSerializer
     lookup_field = "id"
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -114,6 +117,7 @@ class RetrieveDestroyPDFAPIView(RetrieveDestroyAPIView):
 
 
 class ConvertPDFAPIView(CreateAPIView):
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         data = request.data
