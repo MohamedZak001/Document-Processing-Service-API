@@ -1,10 +1,15 @@
+from .models import ImageFile, PdfFile
+from .services import ImageService, PDFService
+from .serializers import  (
+    ListImageSerializer, RetrieveImageSerializer, RotateImageSerializer, 
+    FileUploadSerializer, ListPDFSerializer, RetrievePDFSerializer, CovertPDFSerializer
+)
+
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import ListAPIView, RetrieveDestroyAPIView, CreateAPIView
 from rest_framework import status
 from rest_framework.response import Response
 
-from .serializers import ListImageSerializer, RetrieveImageSerializer, RotateImageSerializer, FileUploadSerializer, ListPDFSerializer, RetrievePDFSerializer, CovertPDFSerializer
-from .models import ImageFile, PdfFile
-from .services import ImageService, PDFService
 
 
 
@@ -14,7 +19,7 @@ from .services import ImageService, PDFService
 
 class UploadAPIView(CreateAPIView):
     serializer_class = FileUploadSerializer
-
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         image = serializer.validated_data.get('image')
@@ -32,12 +37,20 @@ class UploadAPIView(CreateAPIView):
                 user=self.request.user
             )
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(status=status.HTTP_201_CREATED, headers=headers)
+
 
 # image views 
 
 class ListImageAPIView(ListAPIView):
     queryset = ImageFile.objects.all()
     serializer_class = ListImageSerializer  
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -52,6 +65,7 @@ class RetrieveDestroyImageAPIView(RetrieveDestroyAPIView):
     queryset = ImageFile.objects.all()
     serializer_class = RetrieveImageSerializer
     lookup_field = "id"
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -59,6 +73,8 @@ class RetrieveDestroyImageAPIView(RetrieveDestroyAPIView):
 
 
 class RotateImageAPIView(CreateAPIView):
+    permission_classes = [IsAuthenticated]
+
 
     def post(self, request, *args, **kwargs):
         data = request.data

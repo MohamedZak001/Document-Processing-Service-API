@@ -9,7 +9,18 @@ class FileUploadSerializer(serializers.Serializer):
     pdf = serializers.FileField(required=False, help_text="the pdf file to be uploaded")
     image = serializers.ImageField(required=False, help_text="the image file to be uploaded")
 
+    def validate_pdf(self, value):
+        if value:
+            if not value.name.lower().endswith('.pdf'):
+                raise ValidationError("Only PDF files are allowed.")
+        return value
 
+    def validate_image(self, value):
+        if value:
+            valid_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp']
+            if not any(value.name.lower().endswith(ext) for ext in valid_extensions):
+                raise ValidationError("Only image files (JPG, JPEG, PNG, GIF, BMP, WEBP) are allowed.")
+            
     def validate(self, attrs):
         attrs = super().validate(attrs)
         if not attrs.get('pdf') and not attrs.get('image'):
