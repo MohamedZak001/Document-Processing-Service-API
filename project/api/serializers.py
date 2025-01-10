@@ -20,7 +20,7 @@ class FileUploadSerializer(serializers.Serializer):
             valid_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp']
             if not any(value.name.lower().endswith(ext) for ext in valid_extensions):
                 raise ValidationError("Only image files (JPG, JPEG, PNG, GIF, BMP, WEBP) are allowed.")
-            
+        return value
     def validate(self, attrs):
         attrs = super().validate(attrs)
         if not attrs.get('pdf') and not attrs.get('image'):
@@ -64,10 +64,16 @@ class RetrieveImageSerializer(serializers.Serializer):
 
 
 class RotateImageSerializer(serializers.Serializer):
-    angle = serializers.DecimalField(max_digits=6,decimal_places=2)
-    image = serializers.IntegerField()
+    angle = serializers.FloatField(required=True)
+    image = serializers.PrimaryKeyRelatedField(
+            queryset=ImageFile.objects.none(),
+            write_only=True)
 
-
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        user = self.context.get("user")
+        if user:
+            self.fields["image"].queryset = ImageFile.objects.filter(user=user)
 
 
 # pdf serializers

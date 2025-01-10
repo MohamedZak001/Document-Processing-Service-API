@@ -18,7 +18,7 @@ class ImageService:
         image = self.instance.image
         with Image.open(image.path) as img:
             rotated_img = img.rotate(angle, expand=True)
-            path = self._rotated_image_path(image.path, rotated_img)
+            path = self._rotated_image_path(image.path)
             directory = os.path.dirname(path)
             if not os.path.exists(directory):
                 os.makedirs(directory)
