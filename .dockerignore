@@ -1,0 +1,13 @@
+# Ignore the media directory
+project/media/
+
+# Ignore the SQLite database file
+project/db.sqlite3
+
+# Ignore other unnecessary files (optional)
+*.log
+*.pyc
+*.__pycache__/
+venv/
+env/
+.env
